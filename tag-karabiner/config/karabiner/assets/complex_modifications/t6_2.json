@@ -1,0 +1,88 @@
+{
+  "title": "小键盘2 (product_id 98)",
+  "rules": [
+    {
+      "description": "小键盘2 替换",
+      "manipulators": [
+        {
+          "description": "F15 => 输入 retry 回车",
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "product_id": 98,
+                  "description": "tiny_keyboard_2"
+                }
+              ]
+            }
+          ],
+          "from": {
+            "key_code": "f15",
+            "modifiers": {
+              "optional": ["any"]
+            }
+          },
+          "to": [
+            {
+              "shell_command": "osascript -e 'tell application \"System Events\" to keystroke \"retry\"' -e 'tell application \"System Events\" to key code 36'"
+            }
+          ]
+        },
+        {
+          "description": "F16 => 输入 go 回车",
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "product_id": 98,
+                  "description": "tiny_keyboard_2"
+                }
+              ]
+            }
+          ],
+          "from": {
+            "key_code": "f16",
+            "modifiers": {
+              "optional": ["any"]
+            }
+          },
+          "to": [
+            {
+              "shell_command": "osascript -e 'tell application \"System Events\" to keystroke \"go\"' -e 'tell application \"System Events\" to key code 36'"
+            }
+          ]
+        },
+        {
+          "description": "F22 => 输入 /goal 指令 回车",
+          "type": "basic",
+          "conditions": [
+            {
+              "type": "device_if",
+              "identifiers": [
+                {
+                  "product_id": 98,
+                  "description": "tiny_keyboard_2"
+                }
+              ]
+            }
+          ],
+          "from": {
+            "key_code": "f22",
+            "modifiers": {
+              "optional": ["any"]
+            }
+          },
+          "to": [
+            {
+              "shell_command": "osascript -e 'tell application \"System Events\" to keystroke \"/goal start coding directly, finish development and end-to-end verification\"' -e 'tell application \"System Events\" to key code 36'"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

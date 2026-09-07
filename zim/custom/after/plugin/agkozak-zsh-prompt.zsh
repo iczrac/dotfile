@@ -25,12 +25,7 @@ AGKOZAK_VIRTUALENV_CHARS=( ' ' '' )
 # proxy status
 function agkozak_proxy_status() {
     if [[ -n "$http_proxy" || -n "$https_proxy" ]]; then
-        # 在一些特殊场景下，比如在 IDEA 中，用普通的文本展示，避免兼容问题
-        if [[ -n "$IN_IDEA" ]]; then
-            printf '%s' "[P]"
-        else
-            printf '%s' "%F{227}%B⚡%b%f"  # 浅黄色 + 加粗
-        fi
+        printf '%s' "🌐"
     fi
 }
 
@@ -52,7 +47,7 @@ function get_env_status() {
 # private mode
 function is_private_mode() {
     if [[ -z "$HISTFILE" ]]; then
-        printf '%s' "🫣"
+        printf '%s' "👻"
     fi
 }
 

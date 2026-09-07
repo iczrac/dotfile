@@ -2,8 +2,12 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-# add any arg if you want to send current window to next display
-send_window=${1:-}
+# mode:
+#   (empty)     -> only focus next display
+#   move_window -> send current window to next display, then follow focus
+#   move_space  -> send whole current space to next display, then follow focus
+#                  (requires SIP disabled / scripting-addition)
+mode=${1:-}
 all_display_indices_array=($(yabai -m query --displays | jq '.[].index | @sh' | tr -d \'\" | sort))
 
 if [[ 1 -eq ${#all_display_indices_array[@]} ]]; then
@@ -23,8 +27,14 @@ done
 
 if [[ -n ${next_display_index:+x} ]]; then
   index=${all_display_indices_array[next_display_index]}
-  if [ -n "$send_window" ]; then
-    yabai -m window --display $index
-  fi
+  case "$mode" in
+    move_window)
+      yabai -m window --display $index
+      ;;
+    move_space)
+      # move the whole space to the target display; it follows automatically
+      yabai -m space --display $index
+      ;;
+  esac
   yabai -m display --focus $index
 fi

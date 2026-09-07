@@ -167,6 +167,19 @@ gitstatus_stop 'MY' && gitstatus_start -s -1 -u -1 -c -1 -d -1 'MY'
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd my_set_prompt
 
+### -------------------------- tmux logical pwd -----------------------------------
+
+# tmux 的 #{pane_current_path} 取自进程的物理 cwd，会把软链接目录解析成真实路径，
+# 导致 split-window -c "#{pane_current_path}" 跳出软链接。这里把 shell 看到的
+# 逻辑路径 $PWD 同步到当前 pane 的 user option，split 绑定改读这个变量即可保留软链接。
+# 用 chpwd（只在真正 cd 换目录时触发）而非 precmd（每条命令都触发），
+# 避免每次回车都多一次 tmux client-server 往返。
+function my_sync_tmux_pwd() {
+	[ -n "$TMUX" ] && tmux set-option -p @pwd "$PWD" 2>/dev/null
+}
+add-zsh-hook chpwd my_sync_tmux_pwd
+my_sync_tmux_pwd   # 保证新开的 pane 一进来就有值，不用等第一次 cd
+
 ### -------------------------- Alias ----------------------------------------------
 
 alias rgg="${ZIM_CUSTOM}/scripts/riggrep-fzf-vim.sh"
@@ -317,3 +330,12 @@ export PATH="/Users/bjhl/.local/bin:$PATH"
 
 # Added by Antigravity IDE
 export PATH="/Users/bjhl/.antigravity-ide/antigravity-ide/bin:$PATH"
+
+# mes-claude-config
+export PATH="$HOME/.local/bin:$PATH"
+
+# mes-claude-config: vspace list --print-path + cd
+vspace-go() {
+    local dir
+    dir="$(vspace list --print-path)" && cd "$dir" || return
+}

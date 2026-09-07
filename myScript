@@ -97,6 +97,25 @@ goto() {
 	cd "$(dirname $1)"
 }
 
+# 抓取当前 tmux pane 最近 500 行内容，结合项目上下文分析刚才遇到的问题
+tc() {
+	if [ -z "$TMUX" ]; then
+		echo "当前不在 tmux 环境中，无法抓取终端上下文" >&2
+		return 1
+	fi
+	tmux capture-pane -p -S -500 > /tmp/claude-terminal-context.txt
+	command claude --permission-mode acceptEdits --dangerously-skip-permissions --model 'sonnet[1m]' "先读取 /tmp/claude-terminal-context.txt，结合当前项目上下文分析我刚才遇到的问题。"
+}
+
+tco() {
+	if [ -z "$TMUX" ]; then
+		echo "当前不在 tmux 环境中，无法抓取终端上下文" >&2
+		return 1
+	fi
+	tmux capture-pane -p -S -500 > /tmp/claude-terminal-context.txt
+	command claude --permission-mode acceptEdits --model 'opus[1m]' --dangerously-skip-permissions "先读取 /tmp/claude-terminal-context.txt，结合当前项目上下文分析我刚才遇到的问题。"
+}
+
 # navi shortcuts
 ch() {
   [[ $# -eq 0 ]] && navi || navi --query $*
@@ -105,8 +124,28 @@ ch() {
 # latest file
 latest_file() {
   local targetFolder=${1:-$PWD}
-  local fileName=$(ls -t $targetFolder | head -n 1)
+  local fileName=$(command ls -t $targetFolder | head -n 1)
   echo ${targetFolder%%/}/${fileName}
+}
+
+# 把 ~/Downloads/ 下最新创建的文件移动到指定路径
+dl_mv() {
+  if [ -z "$1" ]; then
+    echo "Usage: dl_mv <path>"
+    return 1
+  fi
+  local file=$(latest_file "$HOME/Downloads")
+  mv "$file" "$1"
+}
+
+# 把 ~/Downloads/ 下最新创建的文件复制到指定路径
+dl_cp() {
+  if [ -z "$1" ]; then
+    echo "Usage: dl_cp <path>"
+    return 1
+  fi
+  local file=$(latest_file "$HOME/Downloads")
+  cp "$file" "$1"
 }
 
 # mkdir and cd

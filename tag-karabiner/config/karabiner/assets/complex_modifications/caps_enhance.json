@@ -474,6 +474,34 @@
           ]
         },
         {
+          "description": "caps + cmd + i",
+          "type": "basic",
+          "conditions": [
+            {
+              "name": "caps_arrow_mode",
+              "type": "variable_if",
+              "value": 1
+            }
+          ],
+          "from": {
+            "key_code": "i",
+            "modifiers": {
+              "mandatory": ["left_command"]
+            }
+          },
+          "to": [
+            {
+              "key_code": "i",
+              "modifiers": [
+                "left_command",
+                "left_shift",
+                "left_control",
+                "left_option"
+              ]
+            }
+          ]
+        },
+        {
           "description": "打开iTerm",
           "type": "basic",
           "conditions": [
@@ -484,7 +512,10 @@
             }
           ],
           "from": {
-            "key_code": "i"
+            "key_code": "i",
+            "modifiers": {
+              "optional": ["any"]
+            }
           },
           "to": [
             {
